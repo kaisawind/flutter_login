@@ -20,7 +20,7 @@
 
 ## Preview
 
-![Capture](./docs/capture.png)
+<img src="./docs/capture.png" alt="Kaisawind's character" width="400">
 
 ## Getting Started
 
