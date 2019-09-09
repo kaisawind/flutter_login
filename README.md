@@ -39,4 +39,3 @@ samples, guidance on mobile development, and a full API reference.
 All original code in this repository is licensed under [MIT](https://github.com/kaisawind/flutter_login/blob/master/LICENSE) license.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkaisawind%2Fflutter_login.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkaisawind%2Fflutter_login?ref=badge_large)
-
