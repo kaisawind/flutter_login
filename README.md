@@ -18,6 +18,10 @@
   <a href="#license">License</a>
 </p>
 
+## Preview
+
+![Capture](./docs/capture.png)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
