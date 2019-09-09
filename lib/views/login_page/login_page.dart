@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   initSp() async {
     // 获取存储句柄
     sp = await SpUtil.getInstance();
-    bool remember = sp.getBool(SpKeys.isRememberPassword);
+    bool remember = sp.getBool(SpKeys.isRememberPassword) ?? false;
     LogUtil.e('is remember password: $remember');
     if (remember) {
       String username = sp.getString(SpKeys.name);
@@ -195,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                 } else {
                   sp.putString(SpKeys.password, '');
                 }
+                _showDialog();
               }
             } else {
               print('validate false');
@@ -313,5 +314,26 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _showDialog() {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text('用户名密码错误'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('确定'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
   }
 }
