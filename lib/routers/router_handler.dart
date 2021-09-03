@@ -23,5 +23,5 @@ var notFoundWidgetHandler = Handler(handlerFunc: (BuildContext? context, Map<Str
 
 /// 重置密码 页面
 var resetPasswordHandler = Handler(handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
-  return ResetPassword();
+  return const ResetPassword();
 });

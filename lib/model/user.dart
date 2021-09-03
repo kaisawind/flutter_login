@@ -13,6 +13,7 @@ class User {
     required this.roles,
   });
 
+  @override
   String toString() {
     return 'User: {id: $id, name: $name, email: $email, telephone: $telephone}';
   }

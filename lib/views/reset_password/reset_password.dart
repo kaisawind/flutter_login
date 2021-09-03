@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ResetPassword extends StatefulWidget {
+  const ResetPassword({Key? key}) : super(key: key);
+
   @override
   _ResetPasswordState createState() => _ResetPasswordState();
 }
@@ -17,9 +19,9 @@ class _ResetPasswordState extends State<ResetPassword> {
               Navigator.pop(context);
             },
           ),
-          title: Text("重置密码"),
+          title: const Text("重置密码"),
         ),
-        body: Center(
+        body: const Center(
           child: Text('请联系管理员'),
         ));
   }

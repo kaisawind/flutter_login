@@ -9,10 +9,10 @@ class UserAPI {
   // 用户登陆
   static Future<Token> login(String username, String password) async {
     if (username.isEmpty) {
-      throw new FormatException('username is null');
+      throw const FormatException('username is null');
     }
     if (password.isEmpty) {
-      throw new FormatException('password is null');
+      throw const FormatException('password is null');
     }
     var params = {
       "username": username,

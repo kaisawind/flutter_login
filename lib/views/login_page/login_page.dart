@@ -112,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: Colors.green),
               ),
               onTap: () {
-                print('去注册');
                 Navigator.pop(context);
               },
             ),

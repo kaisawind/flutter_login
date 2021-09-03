@@ -5,9 +5,11 @@ import 'package:login/routers/application.dart';
 import 'package:login/utils/net_utils.dart';
 import 'package:login/utils/style.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -30,8 +32,7 @@ class _MyAppState extends State<MyApp> {
       title: 'title',
       onGenerateRoute: Application.router!.generator,
       theme: ThemeData(
-        primaryColor: AppColor.colorGreen,
-        canvasColor: AppColor.colorGreen,
+        primarySwatch: AppColor.elGreen,
       ),
     );
   }
