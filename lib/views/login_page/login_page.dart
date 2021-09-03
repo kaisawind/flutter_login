@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../utils/style.dart';
-import '../../api/user.dart';
-import '../../utils/sp_utils.dart';
-import '../../resources/sp_keys.dart';
-import '../../routers/routers.dart';
-import '../../utils/log_utils.dart';
+import 'package:login/utils/style.dart';
+import 'package:login/api/user.dart';
+import 'package:login/resources/sp_keys.dart';
+import 'package:login/routers/routers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -19,9 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   String _password = '';
   bool _isObscure = true;
   bool _isRememberPassword = false;
-  Color _eyeColor;
-  SpUtil sp;
-  List _loginMethod = [
+  Color _eyeColor = Colors.grey;
+  late SharedPreferences sp;
+  final List _loginMethod = [
     // {
     //   "title": "facebook",
     //   "icon": GroovinMaterialIcons.facebook,
@@ -36,10 +37,6 @@ class _LoginPageState extends State<LoginPage> {
     // },
   ];
 
-  _LoginPageState() {
-    LogUtil.init(isDebug: LogUtil.debuggable, tag: "###LoginPage###");
-  }
-
   @override
   void initState() {
     super.initState();
@@ -48,14 +45,11 @@ class _LoginPageState extends State<LoginPage> {
 
   initSp() async {
     // 获取存储句柄
-    sp = await SpUtil.getInstance();
+    sp = await SharedPreferences.getInstance();
     bool remember = sp.getBool(SpKeys.isRememberPassword) ?? false;
-    LogUtil.e('is remember password: $remember');
     if (remember) {
-      String username = sp.getString(SpKeys.name);
-      LogUtil.e('username: $username');
-      String password = sp.getString(SpKeys.password);
-      LogUtil.e('password: $password');
+      String username = sp.getString(SpKeys.name) ?? '';
+      String password = sp.getString(SpKeys.password) ?? '';
       setState(() {
         _username = username;
         _uController.text = username;
@@ -79,22 +73,23 @@ class _LoginPageState extends State<LoginPage> {
         body: Form(
             key: _formKey,
             child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 22.0),
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: kToolbarHeight,
                 ),
+//                buildIcon(),
                 buildTitle(),
-                buildTitleLine(),
-                SizedBox(height: 70.0),
+                // buildTitleLine(),
+                const SizedBox(height: 70.0),
                 // buildEmailTextField(),
                 buildUsernameTextField(),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 buildPasswordTextField(context),
                 buildForgetPasswordText(context),
-                SizedBox(height: 60.0),
+                const SizedBox(height: 60.0),
                 buildLoginButton(context),
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 // buildOtherLoginText(),
                 // buildOtherMethod(context),
                 // buildRegisterText(context),
@@ -106,13 +101,13 @@ class _LoginPageState extends State<LoginPage> {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.only(top: 10.0),
+        padding: const EdgeInsets.only(top: 10.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('没有账号？'),
+            const Text('没有账号？'),
             GestureDetector(
-              child: Text(
+              child: const Text(
                 '点击注册',
                 style: TextStyle(color: Colors.green),
               ),
@@ -136,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   return IconButton(
                       icon: Icon(item['icon'], color: Theme.of(context).iconTheme.color),
                       onPressed: () {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("${item['title']}登录"),
                           action: SnackBarAction(
                             label: "取消",
@@ -151,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Align buildOtherLoginText() {
-    return Align(
+    return const Align(
         alignment: Alignment.center,
         child: Text(
           '其他账号登录',
@@ -164,44 +159,41 @@ class _LoginPageState extends State<LoginPage> {
       child: SizedBox(
         height: 45.0,
         width: 270.0,
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text(
             '登录',
-            style: Theme.of(context).primaryTextTheme.headline,
+            style: Theme.of(context).primaryTextTheme.headline5,
           ),
           onPressed: () async {
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState != null && _formKey.currentState!.validate()) {
               ///只有输入的内容符合要求通过才会到达此处
-              _formKey.currentState.save();
+              _formKey.currentState!.save();
               try {
                 var value = await UserAPI.login(_username, _password);
-                sp.putString(SpKeys.token, value.tokenType + " " + value.accessToken);
+                sp.setString(SpKeys.token, value.tokenType + " " + value.accessToken);
                 var user = await UserAPI.getUserInfo();
-                sp.putStringList(SpKeys.roles, user.roles);
-                sp.putString(SpKeys.name, user.name);
-                sp.putString(SpKeys.id, user.id);
-                sp.putBool(SpKeys.isRememberPassword, _isRememberPassword);
+                sp.setStringList(SpKeys.roles, user.roles);
+                sp.setString(SpKeys.name, user.name);
+                sp.setString(SpKeys.id, user.id);
+                sp.setBool(SpKeys.isRememberPassword, _isRememberPassword);
                 if (_isRememberPassword) {
-                  sp.putString(SpKeys.password, _password);
+                  sp.setString(SpKeys.password, _password);
                 } else {
-                  sp.putString(SpKeys.password, '');
+                  sp.setString(SpKeys.password, '');
                 }
-                Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (route) => route == null);
+                Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (route) => false);
               } catch (e) {
-                sp.putBool(SpKeys.isRememberPassword, _isRememberPassword);
-                sp.putString(SpKeys.name, _username);
+                sp.setBool(SpKeys.isRememberPassword, _isRememberPassword);
+                sp.setString(SpKeys.name, _username);
                 if (_isRememberPassword) {
-                  sp.putString(SpKeys.password, _password);
+                  sp.setString(SpKeys.password, _password);
                 } else {
-                  sp.putString(SpKeys.password, '');
+                  sp.setString(SpKeys.password, '');
                 }
                 _showDialog();
               }
-            } else {
-              print('validate false');
             }
           },
-          shape: StadiumBorder(side: BorderSide()),
         ),
       ),
     );
@@ -219,20 +211,20 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Checkbox(
                   value: _isRememberPassword,
-                  onChanged: (bool value) {
+                  onChanged: (bool? value) {
                     setState(() {
-                      _isRememberPassword = value;
+                      _isRememberPassword = value ?? false;
                     });
                   },
                 ),
-                Text(
+                const Text(
                   '记住密码',
                   style: TextStyle(fontSize: 14.0, color: Colors.grey),
                 ),
               ],
             ),
-            FlatButton(
-              child: Text(
+            TextButton(
+              child: const Text(
                 '忘记密码？',
                 style: TextStyle(fontSize: 14.0, color: Colors.grey),
               ),
@@ -249,10 +241,10 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField buildPasswordTextField(BuildContext context) {
     return TextFormField(
       controller: _pController,
-      onSaved: (String value) => _password = value,
+      onSaved: (String? value) => _password = value ?? '',
       obscureText: _isObscure,
-      validator: (String value) {
-        if (value.isEmpty) {
+      validator: (String? value) {
+        if (value!.isEmpty) {
           return '请输入密码';
         }
         return null;
@@ -267,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 setState(() {
                   _isObscure = !_isObscure;
-                  _eyeColor = _isObscure ? Colors.grey : Theme.of(context).iconTheme.color;
+                  _eyeColor = _isObscure ? Colors.grey : Colors.green;
                 });
               })),
     );
@@ -276,26 +268,26 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField buildUsernameTextField() {
     return TextFormField(
       controller: _uController,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: '用户名',
       ),
-      validator: (String value) {
-        if (value.isEmpty) {
+      validator: (String? value) {
+        if (value!.isEmpty) {
           return '请输入用户名';
         }
         return null;
       },
-      onSaved: (String value) => _username = value,
+      onSaved: (String? value) => _username = value ?? '',
     );
   }
 
   Padding buildTitleLine() {
     return Padding(
-      padding: EdgeInsets.only(left: 12.0, top: 4.0),
+      padding: const EdgeInsets.only(left: 12.0, top: 4.0),
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Container(
-          color: Color(AppColor.gridGreen),
+          color: const Color(AppColor.gridGreen),
           width: 40.0,
           height: 2.0,
         ),
@@ -304,7 +296,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Padding buildTitle() {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
         '登录',
@@ -321,11 +313,11 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('用户名密码错误'),
+        return AlertDialog(
+          title: const Text('用户名密码错误'),
           actions: <Widget>[
-            new FlatButton(
-              child: new Text('确定'),
+            TextButton(
+              child: const Text('确定'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -334,6 +326,5 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
-
   }
 }

@@ -1,10 +1,9 @@
 import 'dart:async' show Future;
-import 'dart:io';
 import 'package:dio/dio.dart';
-import '../utils/net_utils.dart';
-import '../model/token.dart';
-import '../model/user.dart';
-import '../api/api.dart';
+import 'package:login/utils/net_utils.dart';
+import 'package:login/model/token.dart';
+import 'package:login/model/user.dart';
+import 'package:login/api/api.dart';
 
 class UserAPI {
   // 用户登陆
@@ -19,8 +18,7 @@ class UserAPI {
       "username": username,
       "password": password,
     };
-    var contentType = ContentType.parse("application/x-www-form-urlencoded");
-    var options = new Options(contentType: contentType);
+    var options = new Options(contentType: Headers.formUrlEncodedContentType);
     var response = await NetUtils.post(Api.LOGIN, data: params, options: options);
     Token token = Token.fromJson(response);
     return token;

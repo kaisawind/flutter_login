@@ -1,5 +1,5 @@
 import 'package:fluro/fluro.dart';
-import './router_handler.dart';
+import 'package:login/routers/router_handler.dart';
 
 class Routes {
   static String root = "/";
@@ -7,7 +7,7 @@ class Routes {
   static String login = '/login';
   static String resetPassword = '/password/reset';
 
-  static void configureRoutes(Router router) {
+  static void configureRoutes(FluroRouter router) {
     router.notFoundHandler = notFoundWidgetHandler;
     router.define(root, handler: loginPageHandler);
     router.define(home, handler: homePageHandler);

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
-import 'routers/routers.dart';
-import 'routers/application.dart';
-import 'utils/style.dart';
-import 'utils/log_utils.dart';
+import 'package:login/routers/routers.dart';
+import 'package:login/routers/application.dart';
+import 'package:login/utils/net_utils.dart';
+import 'package:login/utils/style.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,23 +13,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   _MyAppState() {
-    final router = new Router();
+    super.initState();
+
+    // init router
+    final router = FluroRouter();
     Routes.configureRoutes(router);
     Application.router = router;
-    LogUtil.init(isDebug: true, tag: "###login###");
+    // init net
+    NetUtils.initNetUtils();
   }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'title',
+      onGenerateRoute: Application.router!.generator,
       theme: ThemeData(
         primaryColor: AppColor.colorGreen,
-        buttonColor: AppColor.colorGreen,
+        canvasColor: AppColor.colorGreen,
       ),
-      onGenerateRoute: Application.router.generator,
     );
   }
 }

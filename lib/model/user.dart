@@ -6,11 +6,11 @@ class User {
   List<String> roles;
 
   User({
-    this.id,
-    this.name,
-    this.email,
-    this.telephone,
-    this.roles,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.telephone,
+    required this.roles,
   });
 
   String toString() {
@@ -21,11 +21,11 @@ class User {
     List<String> items = [];
     json['roles'].forEach((f) => items.add(f));
     return User(
-        id: json['id'],
-        name: json['name'],
-        email: json['email'],
-        telephone: json['telephone'],
-        roles: items,
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      telephone: json['telephone'],
+      roles: items,
     );
   }
 }
