@@ -8,7 +8,7 @@
   <a href="https://github.com/kaisawind/flutter_login/releases">
     <img src="https://img.shields.io/github/release/kaisawind/flutter_login.svg" alt="GitHub release">
   </a>
-  <img src="https://img.shields.io/badge/flutter-v1.9.6--pre.6-blue" />
+  <img src="https://img.shields.io/badge/flutter-v2.6.0-1.0.pre.136-blue" />
   <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fkaisawind%2Fflutter_login?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkaisawind%2Fflutter_login.svg?type=shield"/></a>
 </p>
 
